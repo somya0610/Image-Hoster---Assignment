@@ -42,15 +42,16 @@ public class ImageController {
     }
 
     /**
-     * Controller method called when the details of the specific image with corresponding title are to be displayed
+     * Controller method called when the details of the specific image with corresponding id and title are to be displayed
      * Gets image's details from database and display the same on images/image page
+     * @param id        Integer that represents Image Id of the image whose details need to be displayed
      * @param title     Image title of the image whose details need to be displayed
      * @param model     Model to supply attributes ('images', 'tags') used for rendering view ('images/images')
      * @return          'images/images.html' file to display image's details and it tags
      */
-    @RequestMapping("/images/{title}")
-    public String showImage(@PathVariable("title") String title, Model model) {
-        Image image = imageService.getImageByTitle(title);
+    @RequestMapping("/images/{id}/{title}")
+    public String showImage(@PathVariable("id") Integer id, @PathVariable("title") String title, Model model) {
+        Image image = imageService.getImage(id);
         model.addAttribute("image", image);
         model.addAttribute("tags", image.getTags());
         return "images/image";
@@ -145,7 +146,7 @@ public class ImageController {
         updatedImage.setDate(new Date());
 
         imageService.updateImage(updatedImage);
-        return "redirect:/images/" + updatedImage.getTitle();
+        return "redirect:/images/" + imageId + "/" + updatedImage.getTitle();
     }
 
 
@@ -209,8 +210,10 @@ public class ImageController {
             tagString.append(tags.get(i).getName()).append(",");
         }
 
-        Tag lastTag = tags.get(tags.size() - 1);
-        tagString.append(lastTag.getName());
+        if (!tags.isEmpty()) {
+            Tag lastTag = tags.get(tags.size() - 1);
+            tagString.append(lastTag.getName());
+        }
 
         return tagString.toString();
     }
