@@ -66,7 +66,7 @@ public class UserControllerTest {
         this.mockMvc.perform(post("/users/registration")
                 .flashAttr("user", user)
         )
-                .andExpect(model().attribute("passwordTypeError", equalTo("Password must contain atleast 1 alphabet, 1 number & 1 special character")));
+                .andExpect(model().attribute("passwordTypeError", equalTo("Password must contain at least 1 alphabet, 1 number & 1 special character")));
     }
 
     // This test checks the controller logic for user signup when user fills the form

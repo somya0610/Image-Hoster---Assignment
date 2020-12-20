@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Controller
@@ -23,6 +25,8 @@ public class UserController {
 
     @Autowired
     private ImageService imageService;
+
+    private static final String PASSWORD_PATTERN = "((?=.*[a-zA-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).*)";
 
     /**
      * Controller method called when the request pattern is of type 'users/registration'
@@ -44,12 +48,21 @@ public class UserController {
      * and the incoming request is of 'POST' type
      * Persists User details in database
      * @param user  User model object which has the user's name, password and his/ her profile details
+     * @param model Model to supply attributes ('passwordTypeError', 'User') used for rendering view ('users/registration')
+     *              in case the password does not meet the specific strength
      * @return      redirects to '/users/login' for user to login
      */
     @RequestMapping(value = "users/registration", method = RequestMethod.POST)
-    public String registerUser(User user) {
+    public String registerUser(User user, Model model) {
+        boolean isValidPassword = isValidPassword(user.getPassword());
+        if(!isValidPassword) {
+            String error = "Password must contain at least 1 alphabet, 1 number & 1 special character";
+            model.addAttribute("passwordTypeError",error);
+            model.addAttribute("User", user);
+            return "users/registration";
+        }
         userService.registerUser(user);
-        return "redirect:/users/login";
+        return "users/login";
     }
 
     /**
@@ -98,5 +111,21 @@ public class UserController {
         List<Image> images = imageService.getAllImages();
         model.addAttribute("images", images);
         return "index";
+    }
+
+    /**
+     * Method to check if the password meets the specific strength
+     * The password entered by the user must contain at least 1 alphabet (a-z or A-Z), 1 number (0-9)
+     * and 1 special character (any character other than a-z, A-Z and 0-9)
+     * @param password  String that represents the password entered by the user
+     * @return          boolean
+     */
+    public boolean isValidPassword(String password) {
+        if (password.isEmpty() || password.length() < 3) {
+            return false;
+        }
+        Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
     }
 }
