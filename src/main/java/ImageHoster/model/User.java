@@ -31,10 +31,13 @@ public class User {
     @JoinColumn(name = "profile_id")
     private UserProfile profile;
 
-
     // One to Many mapping: the 'users' table is referenced by the 'images' table
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Image> images = new ArrayList<>();
+
+    //One to One mapping: the 'users' table is referenced by the 'comments' table
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<Comment> comments;
 
     public Integer getId() {
         return id;
@@ -74,6 +77,14 @@ public class User {
 
     public void setImages(List<Image> images) {
         this.images = images;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }
 
