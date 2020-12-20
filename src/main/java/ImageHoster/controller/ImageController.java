@@ -100,11 +100,22 @@ public class ImageController {
      * Fetches the details of the image that needs to be edited
      * @param imageId   Integer that represents image id
      * @param model     Model to supply attributes ('image', 'tags') used for rendering view ('images/edit')
+     * @param session   HttpSession to get logged-in user details
      * @return          'images/edit.html' file where the image's details can be edited
      */
     @RequestMapping(value = "/editImage")
-    public String editImage(@RequestParam("imageId") Integer imageId, Model model) {
+    public String editImage(@RequestParam("imageId") Integer imageId, Model model, HttpSession session) {
         Image image = imageService.getImage(imageId);
+        User loggedUser = (User) session.getAttribute("loggeduser");
+        //If the logged-in user has not posted the image selected to edit,
+        //return back to images/image with the error message on the screen
+        if (loggedUser.getId() != image.getUser().getId()) {
+            String error = "Only the owner of the image can edit the image";
+            model.addAttribute("editError", error);
+            model.addAttribute("image", image);
+            model.addAttribute("tags", image.getTags());
+            return "images/image";
+        }
 
         // Convert the list of all the tags to a string containing all the tags separated by a comma
         String tags = convertTagsToString(image.getTags());
@@ -155,10 +166,25 @@ public class ImageController {
      * and also the incoming request is of 'DELETE' type
      * Deletes the image from database corresponding to image id passed from the screen
      * @param imageId   Integer that represents image id to be deleted
+     * @param model     Model to supply attributes ('image', 'tags') used for rendering view ('images/image')
+     *                  in case the logged-in user is not the owner of the image
+     * @param session   HttpSession to get logged-in user details
      * @return          Redirects to '/images' to display the available images in database
      */
     @RequestMapping(value = "/deleteImage", method = RequestMethod.DELETE)
-    public String deleteImageSubmit(@RequestParam(name = "imageId") Integer imageId) {
+    public String deleteImageSubmit(@RequestParam(name = "imageId") Integer imageId, Model model, HttpSession session) {
+        Image image = imageService.getImage(imageId);
+        User loggedUser = (User) session.getAttribute("loggeduser");
+        //If the logged in user has not posted the image selected to delete,
+        //return back to images/image with the error message on the screen
+        if (loggedUser.getId() != image.getUser().getId()) {
+            String error = "Only the owner of the image can delete the image";
+            model.addAttribute("deleteError", error);
+            model.addAttribute("image", image);
+            model.addAttribute("tags", image.getTags());
+            return "images/image";
+        }
+
         imageService.deleteImage(imageId);
         return "redirect:/images";
     }
