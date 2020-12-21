@@ -35,8 +35,8 @@ public class CommentController {
      * @param session   HttpSession to get logged-in user details
      * @return          Redirects to '/images/{id}/{title} page
      */
-    @RequestMapping(value = "/image/{id}/{title}/comments", method = RequestMethod.POST)
-    public String createComment(@PathVariable("id") Integer id, @PathVariable("title") String title,
+    @RequestMapping(value = "/image/{imageId}/{imageTitle}/comments", method = RequestMethod.POST)
+    public String createComment(@PathVariable("imageId") Integer id, @PathVariable("imageTitle") String title,
                                 @RequestParam("comment") String text, HttpSession session) {
         Image image = imageService.getImage(id);
         User user = (User) session.getAttribute("loggeduser");

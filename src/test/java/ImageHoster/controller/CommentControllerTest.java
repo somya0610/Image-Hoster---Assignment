@@ -34,7 +34,7 @@ public class CommentControllerTest {
     private ImageService imageService;
 
     //This test checks controller logic for comment and checks whether the controller logic redirects
-    // to the request handling method with request mapping of type "/images/{imageId}/{title}"
+    // to the request handling method with request mapping of type "/images/{imageId}/{title}/comments"
     @Test
     public void createComment() throws Exception {
         User user = new User();
