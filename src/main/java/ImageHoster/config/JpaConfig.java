@@ -15,6 +15,7 @@ public class JpaConfig {
     public EntityManagerFactory entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean emfb = new LocalContainerEntityManagerFactoryBean();
         emfb.setPersistenceXmlLocation("classpath:META-INF/persistence.xml");
+        emfb.setDataSource(dataSource());
         emfb.afterPropertiesSet();
         return emfb.getObject();
     }

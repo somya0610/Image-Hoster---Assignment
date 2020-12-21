@@ -29,6 +29,8 @@ public class UserRepository {
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
+        } finally {
+            em.close();
         }
     }
 
@@ -40,8 +42,8 @@ public class UserRepository {
      * @return          User object if user exists in the database, else return null
      */
     public User checkUser(String username, String password) {
+        EntityManager em = emf.createEntityManager();
         try {
-            EntityManager em = emf.createEntityManager();
             TypedQuery<User> typedQuery = em.createQuery("SELECT u FROM User u WHERE u.username = :username" +
                     " AND u.password = :password", User.class);
             typedQuery.setParameter("username", username);
@@ -50,6 +52,8 @@ public class UserRepository {
             return typedQuery.getSingleResult();
         } catch (NoResultException nre) {
             return null;
+        } finally {
+            em.close();
         }
     }
 }

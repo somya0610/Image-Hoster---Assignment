@@ -28,6 +28,8 @@ public class TagRepository {
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
+        } finally {
+            em.close();
         }
         return tag;
     }
@@ -45,6 +47,8 @@ public class TagRepository {
             return typedQuery.getSingleResult();
         } catch (NoResultException nre) {
             return null;
+        } finally {
+            em.close();
         }
     }
 }
