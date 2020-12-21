@@ -49,8 +49,8 @@ public class ImageController {
      * @param model     Model to supply attributes ('images', 'tags') used for rendering view ('images/images')
      * @return          'images/images.html' file to display image's details and it tags
      */
-    @RequestMapping("/images/{id}/{title}")
-    public String showImage(@PathVariable("id") Integer id, @PathVariable("title") String title, Model model) {
+    @RequestMapping("/images/{imageId}/{title}")
+    public String showImage(@PathVariable("imageId") Integer id, @PathVariable("title") String title, Model model) {
         Image image = imageService.getImage(id);
         model.addAttribute("image", image);
         model.addAttribute("tags", image.getTags());
