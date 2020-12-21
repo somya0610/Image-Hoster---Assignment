@@ -56,7 +56,7 @@ public class UserController {
     public String registerUser(User user, Model model) {
         boolean isValidPassword = isValidPassword(user.getPassword());
         if(!isValidPassword) {
-            String error = "Password must contain at least 1 alphabet, 1 number & 1 special character";
+            String error = "Password must contain atleast 1 alphabet, 1 number & 1 special character";
             model.addAttribute("passwordTypeError",error);
             model.addAttribute("User", user);
             return "users/registration";
