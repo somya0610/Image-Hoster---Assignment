@@ -24,6 +24,8 @@ public class CommentController {
 
     @Autowired
     CommentService commentService;
+    
+    //Test
 
     /**
      * Controller method called when the request pattern is of type '/image/{id}/{title}/comments'
